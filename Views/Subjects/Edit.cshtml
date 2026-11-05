@@ -1,0 +1,42 @@
+@model SmartStudyPlanner.Models.Subject
+@{
+    ViewData["Title"] = "Edit Subject";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card card-custom p-4 shadow-sm">
+            <h4 class="fw-bold mb-3"><i class="bi bi-pencil-square text-primary me-2"></i>Edit Subject</h4>
+
+            <form asp-action="Edit" method="post">
+                <input type="hidden" asp-for="SubjectId" />
+                <input type="hidden" asp-for="UserId" />
+
+                <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="SubjectName" class="form-label fw-semibold"></label>
+                    <input asp-for="SubjectName" class="form-control" />
+                    <span asp-validation-for="SubjectName" class="text-danger small"></span>
+                </div>
+
+                <div class="form-check mb-4">
+                    <input class="form-check-input" type="checkbox" asp-for="IsActive" />
+                    <label class="form-check-label" asp-for="IsActive">
+                        Active Subject
+                    </label>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+                    <button type="submit" class="btn btn-primary-custom">Update Subject</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

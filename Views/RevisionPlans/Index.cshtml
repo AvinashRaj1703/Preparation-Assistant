@@ -1,0 +1,108 @@
+@model IEnumerable<SmartStudyPlanner.Models.RevisionPlan>
+@{
+    ViewData["Title"] = "Spaced Revision Planner";
+}
+
+<div class="page-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+    <div>
+        <h2><i class="bi bi-arrow-repeat text-primary me-2"></i>Spaced Revision Planner</h2>
+        <p class="text-secondary mb-0">Schedule multiple review rounds for high-yield topics before exams.</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary-custom">
+        <i class="bi bi-plus-lg me-1"></i> Plan New Revision
+    </a>
+</div>
+
+<div class="card card-custom overflow-hidden">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light small text-uppercase text-secondary">
+                <tr>
+                    <th style="width: 40px;"></th>
+                    <th>Topic to Revise</th>
+                    <th>Subject</th>
+                    <th>Target Exam</th>
+                    <th>Revision Date</th>
+                    <th>Time</th>
+                    <th>Duration</th>
+                    <th>Status</th>
+                    <th>Notes</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Any())
+                {
+                    @foreach (var r in Model)
+                    {
+                        var isDone = r.Status == "Completed";
+                        <tr class="@(isDone ? "table-light text-muted opacity-75" : "")">
+                            <td>
+                                <form asp-action="ToggleStatus" asp-route-id="@r.RevisionPlanId" method="post" class="m-0">
+                                    <button type="submit" class="btn btn-sm @(isDone ? "btn-success" : "btn-outline-secondary") rounded-circle p-1 d-flex align-items-center justify-content-center" style="width: 26px; height: 26px;" title="Toggle Completion">
+                                        <i class="bi bi-check"></i>
+                                    </button>
+                                </form>
+                            </td>
+                            <td>
+                                <span class="fw-bold @(isDone ? "text-decoration-line-through text-muted" : "text-dark")">
+                                    @r.Topic
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge bg-light text-primary border">@r.Subject?.SubjectName</span>
+                            </td>
+                            <td>
+                                @if (r.Exam != null)
+                                {
+                                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle">
+                                        <i class="bi bi-award me-1"></i>@r.Exam.ExamName
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted small">General Revision</span>
+                                }
+                            </td>
+                            <td>
+                                <strong>@r.RevisionDate.ToString("MMM dd, yyyy")</strong>
+                            </td>
+                            <td class="small text-muted">@r.StartTime</td>
+                            <td>
+                                <span class="badge bg-secondary-subtle text-secondary">@r.DurationMinutes mins</span>
+                            </td>
+                            <td>
+                                <span class="badge @(isDone ? "bg-success" : "bg-warning text-dark") rounded-pill">
+                                    @r.Status
+                                </span>
+                            </td>
+                            <td class="small text-muted text-truncate" style="max-width: 180px;" title="@r.Notes">
+                                @(string.IsNullOrEmpty(r.Notes) ? "-" : r.Notes)
+                            </td>
+                            <td class="text-end">
+                                <a asp-action="Edit" asp-route-id="@r.RevisionPlanId" class="btn btn-sm btn-outline-secondary p-1" title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form asp-action="Delete" asp-route-id="@r.RevisionPlanId" method="post" class="d-inline" onsubmit="return confirm('Delete this revision item?');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger p-1" title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="10" class="text-center py-5 text-muted">
+                            <i class="bi bi-arrow-repeat fs-2 d-block mb-2"></i>
+                            No revision topics scheduled. Add one to boost exam retention!
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

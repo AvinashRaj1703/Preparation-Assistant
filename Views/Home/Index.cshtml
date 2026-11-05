@@ -1,0 +1,185 @@
+@{
+    ViewData["Title"] = "Organize Your Academic Life";
+}
+
+<div class="row align-items-center py-5">
+    <div class="col-lg-7 mb-4 mb-lg-0">
+        <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill fw-semibold mb-3">
+            <i class="bi bi-stars me-1"></i> #1 Academic Productivity & Study Companion
+        </span>
+        <h1 class="display-4 fw-extrabold text-dark tracking-tight mb-3">
+            Ace your exams with <span class="text-primary">Smart Study Planner</span>
+        </h1>
+        <p class="lead text-secondary mb-4">
+            An all-in-one web application built with ASP.NET Core & EF Core. Plan study sessions, conquer assignments, track syllabus revisions, and countdown to exam day — all from one beautiful dashboard.
+        </p>
+
+        <div class="d-flex flex-wrap gap-3 align-items-center mb-4">
+            <a asp-controller="Account" asp-action="Register" class="btn btn-primary btn-lg px-4 py-2 fw-bold rounded-3 shadow-sm">
+                <i class="bi bi-person-plus-fill me-2"></i>Create Student Account
+            </a>
+            <a asp-controller="Account" asp-action="Login" class="btn btn-outline-secondary btn-lg px-4 py-2 fw-semibold rounded-3">
+                <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+            </a>
+        </div>
+
+        <!-- Quick Demo Login Card for Faculty & Reviewers -->
+        <div class="card bg-white border border-primary-subtle shadow-sm p-3 rounded-4" style="max-width: 540px;">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-success rounded-pill px-2.5 py-1">Quick Demo</span>
+                    <strong class="text-dark small">Pre-loaded with Sample Courses & Tasks</strong>
+                </div>
+            </div>
+            <div class="small text-muted mb-2">
+                For quick presentation or evaluation, sign in with the pre-seeded demo student account:
+            </div>
+            <div class="d-flex justify-content-between align-items-center bg-light p-2.5 rounded-3 mb-2 small font-monospace">
+                <span>Email: <strong>student@study.edu</strong></span>
+                <span>Password: <strong>Password123!</strong></span>
+            </div>
+            <form asp-controller="Account" asp-action="Login" method="post" class="m-0">
+                <input type="hidden" name="Email" value="student@study.edu" />
+                <input type="hidden" name="Password" value="Password123!" />
+                <button type="submit" class="btn btn-sm btn-success w-100 fw-bold py-2">
+                    <i class="bi bi-lightning-charge-fill me-1"></i> One-Click Demo Student Sign In
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="position-relative">
+            <div class="card card-custom p-4 shadow-lg border-0 bg-white">
+                <div class="d-flex align-items-center justify-content-between border-bottom pb-3 mb-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="stat-icon-box bg-primary text-white">
+                            <i class="bi bi-calendar-check-fill"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0 fw-bold">Academic Overview</h6>
+                            <small class="text-muted">Live Progress Monitoring</small>
+                        </div>
+                    </div>
+                    <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 rounded-pill">Active Semester</span>
+                </div>
+
+                <div class="row g-3 mb-3 text-center">
+                    <div class="col-4">
+                        <div class="p-2 bg-light rounded-3">
+                            <h4 class="fw-bold mb-0 text-primary">5</h4>
+                            <small class="text-muted">Subjects</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-2 bg-light rounded-3">
+                            <h4 class="fw-bold mb-0 text-warning">4</h4>
+                            <small class="text-muted">Tasks Due</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-2 bg-light rounded-3">
+                            <h4 class="fw-bold mb-0 text-danger">12d</h4>
+                            <small class="text-muted">Next Exam</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-3 bg-primary-subtle text-primary rounded-3 mb-3 small d-flex align-items-center gap-2">
+                    <i class="bi bi-bell-fill fs-5"></i>
+                    <div><strong>Smart Reminder:</strong> .NET Core Practical Exam in 12 days! Syllabus ready.</div>
+                </div>
+
+                <div class="progress mb-2" style="height: 10px;">
+                    <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" style="width: 75%"></div>
+                </div>
+                <div class="d-flex justify-content-between small text-muted">
+                    <span>Daily Study Target: 150 mins</span>
+                    <span class="fw-bold text-success">75% Achieved</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section (Directly Mapped to User Schema & Dotnet Requirements) -->
+<div class="py-5 border-top">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold">All Your Academic Essentials in One Place</h2>
+        <p class="text-secondary">Designed specifically for university students, college learners, and competitive exam aspirants.</p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card card-custom h-100 p-4">
+                <div class="stat-icon-box bg-primary-subtle text-primary mb-3">
+                    <i class="bi bi-journal-bookmark-fill"></i>
+                </div>
+                <h5 class="fw-bold mb-2">Subject Management</h5>
+                <p class="text-secondary small mb-0">
+                    Organize your enrolled courses with active statuses, linked tasks, exams, and study logs for structured learning.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card card-custom h-100 p-4">
+                <div class="stat-icon-box bg-warning-subtle text-warning mb-3">
+                    <i class="bi bi-check2-square"></i>
+                </div>
+                <h5 class="fw-bold mb-2">Assignment Tracker</h5>
+                <p class="text-secondary small mb-0">
+                    Track coursework by Priority, Difficulty, Status, and progress percentage. Compare estimated vs actual study hours.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card card-custom h-100 p-4">
+                <div class="stat-icon-box bg-danger-subtle text-danger mb-3">
+                    <i class="bi bi-clock-history"></i>
+                </div>
+                <h5 class="fw-bold mb-2">Exam Countdown & Syllabus</h5>
+                <p class="text-secondary small mb-0">
+                    Never miss a test date. Live countdown timer, total & passing marks benchmarks, and detailed chapter-wise syllabus storage.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card card-custom h-100 p-4">
+                <div class="stat-icon-box bg-success-subtle text-success mb-3">
+                    <i class="bi bi-stopwatch-fill"></i>
+                </div>
+                <h5 class="fw-bold mb-2">Study Sessions Logger</h5>
+                <p class="text-secondary small mb-0">
+                    Log productive study blocks by topic, subject, and task. Keep detailed notes and automatically update your daily goals.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card card-custom h-100 p-4">
+                <div class="stat-icon-box bg-purple-subtle text-purple mb-3" style="background-color: #f3e8ff; color: #7e22ce;">
+                    <i class="bi bi-arrow-repeat"></i>
+                </div>
+                <h5 class="fw-bold mb-2">Revision Planner</h5>
+                <p class="text-secondary small mb-0">
+                    Master spaced repetition. Schedule targeted revision intervals specifically aligned with upcoming midterms and finals.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card card-custom h-100 p-4">
+                <div class="stat-icon-box bg-info-subtle text-info mb-3">
+                    <i class="bi bi-bell-fill"></i>
+                </div>
+                <h5 class="fw-bold mb-2">Smart Notifications & Goals</h5>
+                <p class="text-secondary small mb-0">
+                    Automatic deadline warnings, exam countdown milestones, and daily study time targets to keep your academic momentum high.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

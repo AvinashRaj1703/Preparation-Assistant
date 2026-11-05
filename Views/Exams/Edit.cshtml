@@ -1,0 +1,72 @@
+@model SmartStudyPlanner.Models.Exam
+@{
+    ViewData["Title"] = "Edit Exam";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="card card-custom p-4 shadow-sm">
+            <h4 class="fw-bold mb-3"><i class="bi bi-pencil-square text-danger me-2"></i>Edit Examination</h4>
+
+            <form asp-action="Edit" method="post">
+                <input type="hidden" asp-for="ExamId" />
+
+                <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="SubjectId" class="form-label fw-semibold"></label>
+                        <select asp-for="SubjectId" class="form-select" asp-items="ViewBag.SubjectId"></select>
+                        <span asp-validation-for="SubjectId" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="ExamName" class="form-label fw-semibold"></label>
+                        <input asp-for="ExamName" class="form-control" />
+                        <span asp-validation-for="ExamName" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="ExamDate" class="form-label fw-semibold"></label>
+                        <input asp-for="ExamDate" type="date" class="form-control" />
+                        <span asp-validation-for="ExamDate" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="ExamTime" class="form-label fw-semibold"></label>
+                        <input asp-for="ExamTime" class="form-control" />
+                        <span asp-validation-for="ExamTime" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="TotalMarks" class="form-label fw-semibold"></label>
+                        <input asp-for="TotalMarks" type="number" class="form-control" />
+                        <span asp-validation-for="TotalMarks" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="PassingMarks" class="form-label fw-semibold"></label>
+                        <input asp-for="PassingMarks" type="number" class="form-control" />
+                        <span asp-validation-for="PassingMarks" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-12">
+                        <label asp-for="Syllabus" class="form-label fw-semibold"></label>
+                        <textarea asp-for="Syllabus" class="form-control" rows="4"></textarea>
+                        <span asp-validation-for="Syllabus" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4 pt-3 border-top">
+                    <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-danger px-4">Update Exam</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

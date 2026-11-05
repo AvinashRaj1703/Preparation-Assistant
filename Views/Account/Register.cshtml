@@ -1,0 +1,73 @@
+@model SmartStudyPlanner.Models.ViewModels.RegisterViewModel
+@{
+    ViewData["Title"] = "Create Student Account";
+}
+
+<div class="row justify-content-center py-4">
+    <div class="col-md-6">
+        <div class="card card-custom p-4 shadow-sm">
+            <div class="text-center mb-4">
+                <div class="stat-icon-box bg-success text-white mx-auto mb-2" style="width: 54px; height: 54px;">
+                    <i class="bi bi-person-plus-fill fs-4"></i>
+                </div>
+                <h3 class="fw-bold mb-1">Join Smart Study Planner</h3>
+                <p class="text-muted small">Create your account to start managing courses & exams</p>
+            </div>
+
+            <form asp-action="Register" method="post">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small" role="alert"></div>
+
+                <div class="mb-3">
+                    <label asp-for="FullName" class="form-label fw-semibold small"></label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"><i class="bi bi-person"></i></span>
+                        <input asp-for="FullName" class="form-control border-start-0" placeholder="e.g. John Doe" autofocus />
+                    </div>
+                    <span asp-validation-for="FullName" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label fw-semibold small"></label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"><i class="bi bi-envelope"></i></span>
+                        <input asp-for="Email" class="form-control border-start-0" placeholder="student@university.edu" />
+                    </div>
+                    <span asp-validation-for="Email" class="text-danger small"></span>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Password" class="form-label fw-semibold small"></label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="bi bi-shield-lock"></i></span>
+                            <input asp-for="Password" class="form-control border-start-0" placeholder="At least 6 chars" />
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="ConfirmPassword" class="form-label fw-semibold small"></label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="bi bi-shield-check"></i></span>
+                            <input asp-for="ConfirmPassword" class="form-control border-start-0" placeholder="Repeat password" />
+                        </div>
+                        <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-success w-100 py-2 fw-bold rounded-3 shadow-sm mb-3">
+                    <i class="bi bi-check-lg me-1"></i> Complete Registration
+                </button>
+            </form>
+
+            <div class="text-center small text-muted">
+                Already registered? <a asp-action="Login" class="text-primary fw-semibold">Sign in here</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

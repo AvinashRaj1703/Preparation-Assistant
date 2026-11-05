@@ -1,0 +1,78 @@
+@model SmartStudyPlanner.Models.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Student Sign In";
+}
+
+<div class="row justify-content-center py-4">
+    <div class="col-md-5">
+        <div class="card card-custom p-4 shadow-sm">
+            <div class="text-center mb-4">
+                <div class="stat-icon-box bg-primary text-white mx-auto mb-2" style="width: 54px; height: 54px;">
+                    <i class="bi bi-box-arrow-in-right fs-4"></i>
+                </div>
+                <h3 class="fw-bold mb-1">Welcome Back</h3>
+                <p class="text-muted small">Sign in to access your study planner</p>
+            </div>
+
+            <form asp-action="Login" method="post">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small" role="alert"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label fw-semibold small"></label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"><i class="bi bi-envelope"></i></span>
+                        <input asp-for="Email" class="form-control border-start-0" placeholder="student@study.edu" autofocus />
+                    </div>
+                    <span asp-validation-for="Email" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Password" class="form-label fw-semibold small"></label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"><i class="bi bi-shield-lock"></i></span>
+                        <input asp-for="Password" class="form-control border-start-0" placeholder="••••••••" />
+                    </div>
+                    <span asp-validation-for="Password" class="text-danger small"></span>
+                </div>
+
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" asp-for="RememberMe" />
+                    <label class="form-check-label small" asp-for="RememberMe">
+                        Keep me signed in on this computer
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-2 fw-bold rounded-3 shadow-sm mb-3">
+                    <i class="bi bi-box-arrow-in-right me-1"></i> Sign In
+                </button>
+            </form>
+
+            <!-- Quick Demo Credentials Box -->
+            <div class="bg-light p-3 rounded-3 small border mb-3">
+                <div class="fw-bold text-dark mb-1 d-flex align-items-center gap-1">
+                    <i class="bi bi-info-circle text-primary"></i> Demo Student Account:
+                </div>
+                <div class="text-secondary font-monospace">Email: student@study.edu</div>
+                <div class="text-secondary font-monospace">Password: Password123!</div>
+                <button type="button" class="btn btn-outline-primary btn-sm w-100 mt-2 fw-semibold" onclick="fillDemo()">
+                    Fill Demo Credentials
+                </button>
+            </div>
+
+            <div class="text-center small text-muted">
+                Don't have an account yet? <a asp-action="Register" class="text-primary fw-semibold">Register here</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function fillDemo() {
+            document.getElementById('Email').value = 'student@study.edu';
+            document.getElementById('Password').value = 'Password123!';
+        }
+    </script>
+}
+

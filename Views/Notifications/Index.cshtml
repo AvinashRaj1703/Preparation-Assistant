@@ -1,0 +1,90 @@
+@model IEnumerable<SmartStudyPlanner.Models.Notification>
+@{
+    ViewData["Title"] = "Smart Notifications";
+}
+
+<div class="page-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+    <div>
+        <h2><i class="bi bi-bell-fill text-primary me-2"></i>Smart Notifications & Alerts</h2>
+        <p class="text-secondary mb-0">Automated alerts for upcoming exams, urgent assignment deadlines, and daily goal milestones.</p>
+    </div>
+    @if (Model.Any(n => !n.IsRead))
+    {
+        <form asp-action="MarkAllAsRead" method="post" class="m-0">
+            <button type="submit" class="btn btn-outline-primary">
+                <i class="bi bi-check2-all me-1"></i> Mark All as Read
+            </button>
+        </form>
+    }
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+        @if (Model.Any())
+        {
+            <div class="list-group gap-2">
+                @foreach (var n in Model)
+                {
+                    <div class="list-group-item card card-custom p-3 border-start border-4 @(n.IsRead ? "border-secondary-subtle bg-light text-muted" : "border-primary bg-white shadow-sm") d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3">
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="stat-icon-box @(n.NotificationType == "ExamCountdown" ? "bg-danger-subtle text-danger" : (n.NotificationType == "DeadlineReminder" ? "bg-warning-subtle text-warning" : "bg-primary-subtle text-primary"))" style="min-width: 44px; width: 44px; height: 44px;">
+                                @if (n.NotificationType == "ExamCountdown")
+                                {
+                                    <i class="bi bi-award-fill"></i>
+                                }
+                                else if (n.NotificationType == "DeadlineReminder")
+                                {
+                                    <i class="bi bi-exclamation-triangle-fill"></i>
+                                }
+                                else if (n.NotificationType == "DailyGoal")
+                                {
+                                    <i class="bi bi-bullseye"></i>
+                                }
+                                else
+                                {
+                                    <i class="bi bi-bell-fill"></i>
+                                }
+                            </div>
+                            <div>
+                                <div class="d-flex align-items-center gap-2 mb-1">
+                                    <h6 class="fw-bold mb-0 @(!n.IsRead ? "text-dark" : "text-secondary")">@n.Title</h6>
+                                    @if (!n.IsRead)
+                                    {
+                                        <span class="badge bg-primary rounded-pill px-2 py-0.5" style="font-size: 0.65rem;">New</span>
+                                    }
+                                </div>
+                                <p class="mb-1 small @(!n.IsRead ? "text-dark" : "text-muted")">@n.Message</p>
+                                <small class="text-muted"><i class="bi bi-clock me-1"></i>@n.NotificationDate.ToString("MMM dd, yyyy &bull; hh:mm tt")</small>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-2 align-self-end align-self-sm-center">
+                            @if (!n.IsRead)
+                            {
+                                <form asp-action="MarkAsRead" asp-route-id="@n.NotificationId" method="post" class="m-0">
+                                    <button type="submit" class="btn btn-sm btn-outline-primary" title="Mark as Read">
+                                        <i class="bi bi-check2"></i>
+                                    </button>
+                                </form>
+                            }
+                            <form asp-action="Delete" asp-route-id="@n.NotificationId" method="post" class="m-0" onsubmit="return confirm('Delete this notification?');">
+                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="card card-custom p-5 text-center text-muted">
+                <i class="bi bi-bell-slash fs-1 text-secondary mb-2"></i>
+                <h5>No Notifications</h5>
+                <p class="mb-0">You're all caught up! Automated reminders will show up here as exams and deadlines approach.</p>
+            </div>
+        }
+    </div>
+</div>
+

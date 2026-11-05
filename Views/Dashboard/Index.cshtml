@@ -1,0 +1,398 @@
+@model SmartStudyPlanner.Models.ViewModels.DashboardViewModel
+@{
+    ViewData["Title"] = "Student Dashboard";
+}
+
+<div class="page-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+    <div>
+        <h2>Welcome back, @User.Identity?.Name! 👋</h2>
+        <p class="text-secondary mb-0">Here is your academic progress, upcoming exam countdowns, and daily schedule.</p>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+        <a asp-controller="StudySessions" asp-action="Create" class="btn btn-primary-custom">
+            <i class="bi bi-play-circle-fill me-1"></i> Log Study Session
+        </a>
+        <a asp-controller="Tasks" asp-action="Create" class="btn btn-outline-primary">
+            <i class="bi bi-plus-lg me-1"></i> New Task
+        </a>
+        <a asp-controller="Exams" asp-action="Create" class="btn btn-outline-danger">
+            <i class="bi bi-calendar-plus me-1"></i> Add Exam
+        </a>
+    </div>
+</div>
+
+<!-- 4 Top KPI Metric Cards -->
+<div class="row g-3 mb-4">
+    <!-- Total Subjects -->
+    <div class="col-sm-6 col-xl-3">
+        <div class="card card-custom p-3 h-100">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="text-muted small fw-semibold text-uppercase">Active Subjects</span>
+                    <h3 class="fw-bold mb-0 mt-1">@Model.TotalSubjects</h3>
+                    <a asp-controller="Subjects" asp-action="Index" class="small text-primary text-decoration-none">View subjects &rarr;</a>
+                </div>
+                <div class="stat-icon-box bg-primary-subtle text-primary">
+                    <i class="bi bi-journal-bookmark-fill"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Tasks -->
+    <div class="col-sm-6 col-xl-3">
+        <div class="card card-custom p-3 h-100">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="text-muted small fw-semibold text-uppercase">Tasks Pending</span>
+                    <h3 class="fw-bold mb-0 mt-1 text-warning">@Model.ActiveTasksCount</h3>
+                    <span class="small text-muted">@Model.CompletedTasksCount completed</span>
+                </div>
+                <div class="stat-icon-box bg-warning-subtle text-warning">
+                    <i class="bi bi-check2-square"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Total Study Time -->
+    <div class="col-sm-6 col-xl-3">
+        <div class="card card-custom p-3 h-100">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="text-muted small fw-semibold text-uppercase">Total Study Logged</span>
+                    <h3 class="fw-bold mb-0 mt-1 text-success">@(Math.Round((double)Model.TotalStudyMinutes / 60.0, 1)) <small class="fs-6 text-muted">hrs</small></h3>
+                    <span class="small text-muted">@Model.TotalStudyMinutes minutes</span>
+                </div>
+                <div class="stat-icon-box bg-success-subtle text-success">
+                    <i class="bi bi-stopwatch-fill"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Next Exam Countdown Card -->
+    <div class="col-sm-6 col-xl-3">
+        <div class="card card-custom p-3 h-100 border-danger-subtle bg-danger-subtle bg-opacity-10">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="text-danger small fw-bold text-uppercase">Next Exam Countdown</span>
+                    @if (Model.NextExam != null)
+                    {
+                        <div class="d-flex align-items-baseline gap-2 mt-1">
+                            <h3 class="fw-bold mb-0 text-danger">
+                                @if (Model.DaysUntilNextExam == 0)
+                                {
+                                    <span>TODAY!</span>
+                                }
+                                else
+                                {
+                                    <span>@Model.DaysUntilNextExam</span> <small class="fs-6 text-danger">days</small>
+                                }
+                            </h3>
+                        </div>
+                        <div class="small text-truncate fw-semibold text-dark" style="max-width: 170px;" title="@Model.NextExam.ExamName">
+                            @Model.NextExam.ExamName
+                        </div>
+                    }
+                    else
+                    {
+                        <h5 class="fw-bold mb-0 mt-1 text-muted">No exams</h5>
+                        <small class="text-muted">Relax or schedule one!</small>
+                    }
+                </div>
+                <div class="stat-icon-box bg-danger text-white">
+                    <i class="bi bi-alarm-fill"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Middle Section: Today's Goal Widget + Visual Charts -->
+<div class="row g-4 mb-4">
+    <!-- Today's Daily Goal Card -->
+    <div class="col-lg-4">
+        <div class="card card-custom p-4 h-100">
+            <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="stat-icon-box bg-info-subtle text-info" style="width: 36px; height: 36px; font-size: 1.1rem;">
+                        <i class="bi bi-bullseye"></i>
+                    </div>
+                    <h5 class="fw-bold mb-0">Today's Daily Goal</h5>
+                </div>
+                @if (Model.TodayGoal != null)
+                {
+                    <span class="badge @(Model.TodayGoal.Status == "Achieved" ? "bg-success" : (Model.TodayGoal.Status == "In Progress" ? "bg-warning text-dark" : "bg-secondary")) rounded-pill">
+                        @Model.TodayGoal.Status
+                    </span>
+                }
+            </div>
+
+            @if (Model.TodayGoal != null)
+            {
+                <!-- Study Time Progress -->
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between small mb-1">
+                        <span class="fw-semibold text-secondary">Study Time</span>
+                        <span class="fw-bold">@Model.TodayGoal.CompletedStudyMinutes / @Model.TodayGoal.TargetStudyMinutes mins</span>
+                    </div>
+                    <div class="progress" style="height: 12px; border-radius: 6px;">
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: @Model.TodayGoal.StudyProgressPercent%" aria-valuenow="@Model.TodayGoal.StudyProgressPercent" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="text-end small text-muted mt-1">@Model.TodayGoal.StudyProgressPercent% complete</div>
+                </div>
+
+                <!-- Tasks Progress -->
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between small mb-1">
+                        <span class="fw-semibold text-secondary">Tasks Completed</span>
+                        <span class="fw-bold">@Model.TodayGoal.CompletedTasks / @Model.TodayGoal.TargetTasks tasks</span>
+                    </div>
+                    <div class="progress" style="height: 12px; border-radius: 6px;">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: @Model.TodayGoal.TaskProgressPercent%" aria-valuenow="@Model.TodayGoal.TaskProgressPercent" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="text-end small text-muted mt-1">@Model.TodayGoal.TaskProgressPercent% complete</div>
+                </div>
+
+                @if (!string.IsNullOrEmpty(Model.TodayGoal.Notes))
+                {
+                    <div class="p-2.5 bg-light rounded-3 small text-muted mb-3 fst-italic">
+                        <i class="bi bi-chat-left-quote me-1"></i> @Model.TodayGoal.Notes
+                    </div>
+                }
+
+                <div class="mt-auto pt-2">
+                    <a asp-controller="DailyGoals" asp-action="CreateOrEditToday" class="btn btn-outline-primary btn-sm w-100">
+                        <i class="bi bi-pencil-square me-1"></i> Adjust Today's Target
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Chart: Weekly Study Time Trends -->
+    <div class="col-lg-5">
+        <div class="card card-custom p-4 h-100">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <h5 class="fw-bold mb-0">Study Time Trends (Last 7 Days)</h5>
+                <span class="badge bg-light text-secondary border">Minutes / Day</span>
+            </div>
+            <p class="text-muted small mb-3">Track daily consistency and study momentum</p>
+            <div style="position: relative; height: 210px;">
+                <canvas id="weeklyChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart: Subject Distribution -->
+    <div class="col-lg-3">
+        <div class="card card-custom p-4 h-100">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <h5 class="fw-bold mb-0">Subject Focus</h5>
+            </div>
+            <p class="text-muted small mb-3">Time allocation across courses</p>
+            <div style="position: relative; height: 210px;">
+                @if (Model.SubjectChartLabels.Any())
+                {
+                    <canvas id="subjectChart"></canvas>
+                }
+                else
+                {
+                    <div class="h-100 d-flex flex-column align-items-center justify-content-center text-muted text-center p-3">
+                        <i class="bi bi-pie-chart fs-1 mb-2 text-secondary"></i>
+                        <small>No study sessions logged yet</small>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bottom Section: Upcoming Tasks, Exams Countdown, Recent Sessions -->
+<div class="row g-4">
+    <!-- Upcoming Tasks / Assignments -->
+    <div class="col-lg-6">
+        <div class="card card-custom h-100">
+            <div class="p-3 border-bottom d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-list-task text-primary fs-5"></i>
+                    <h5 class="fw-bold mb-0">Upcoming Tasks & Assignments</h5>
+                </div>
+                <a asp-controller="Tasks" asp-action="Index" class="small text-primary text-decoration-none fw-semibold">View All &rarr;</a>
+            </div>
+            <div class="p-3">
+                @if (Model.UpcomingTasks.Any())
+                {
+                    <div class="list-group list-group-flush gap-2">
+                        @foreach (var task in Model.UpcomingTasks)
+                        {
+                            var daysLeft = (task.Deadline.Date - DateTime.Today).Days;
+                            <div class="list-group-item p-3 rounded-3 border bg-light d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center gap-3">
+                                    <form asp-controller="Tasks" asp-action="ToggleComplete" asp-route-id="@task.TaskId" method="post" class="m-0">
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary rounded-circle p-1 d-flex align-items-center justify-content-center" style="width: 28px; height: 28px;" title="Mark Completed">
+                                            <i class="bi bi-check"></i>
+                                        </button>
+                                    </form>
+                                    <div>
+                                        <div class="fw-bold text-dark">
+                                            <a asp-controller="Tasks" asp-action="Details" asp-route-id="@task.TaskId" class="text-decoration-none text-dark">
+                                                @task.Title
+                                            </a>
+                                        </div>
+                                        <div class="small text-muted">
+                                            <span class="badge bg-secondary-subtle text-secondary me-1">@task.Subject?.SubjectName</span>
+                                            <span><i class="bi bi-calendar-event me-1"></i>Due: @task.Deadline.ToString("MMM dd")</span>
+                                            @if (daysLeft < 0)
+                                            {
+                                                <span class="badge bg-danger ms-1">Overdue</span>
+                                            }
+                                            else if (daysLeft <= 2)
+                                            {
+                                                <span class="badge bg-warning text-dark ms-1">@daysLeft d left</span>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <span class="badge @(task.Priority == "Urgent" || task.Priority == "High" ? "bg-danger" : "bg-primary") rounded-pill mb-1">
+                                        @task.Priority
+                                    </span>
+                                    <div class="small text-muted">@task.ProgressPercentage%</div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-4 text-muted">
+                        <i class="bi bi-check-circle fs-2 text-success mb-2"></i>
+                        <p class="mb-0">All tasks completed! Great job.</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Exam Countdown List & Syllabus Access -->
+    <div class="col-lg-6">
+        <div class="card card-custom h-100">
+            <div class="p-3 border-bottom d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-award-fill text-danger fs-5"></i>
+                    <h5 class="fw-bold mb-0">Exams & Revision Schedule</h5>
+                </div>
+                <a asp-controller="Exams" asp-action="Index" class="small text-danger text-decoration-none fw-semibold">View Exams &rarr;</a>
+            </div>
+            <div class="p-3">
+                @if (Model.UpcomingExams.Any())
+                {
+                    <div class="list-group list-group-flush gap-2">
+                        @foreach (var exam in Model.UpcomingExams)
+                        {
+                            var daysLeft = (exam.ExamDate.Date - DateTime.Today).Days;
+                            <div class="list-group-item p-3 rounded-3 border bg-light d-flex align-items-center justify-content-between">
+                                <div>
+                                    <h6 class="fw-bold mb-1">
+                                        <a asp-controller="Exams" asp-action="Details" asp-route-id="@exam.ExamId" class="text-decoration-none text-dark">
+                                            @exam.ExamName
+                                        </a>
+                                    </h6>
+                                    <div class="small text-muted">
+                                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle me-1">@exam.Subject?.SubjectName</span>
+                                        <span><i class="bi bi-clock me-1"></i>@exam.ExamDate.ToString("ddd, MMM dd") (@exam.ExamTime)</span>
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <span class="badge @(daysLeft <= 5 ? "bg-danger" : "bg-dark") px-2.5 py-1.5 fs-6 rounded-pill">
+                                        @(daysLeft == 0 ? "TODAY" : $"{daysLeft} Days")
+                                    </span>
+                                    <div class="small text-muted mt-1">Pass: @exam.PassingMarks / @exam.TotalMarks</div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-4 text-muted">
+                        <i class="bi bi-calendar-check fs-2 text-secondary mb-2"></i>
+                        <p class="mb-0">No upcoming exams scheduled.</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // 1. Weekly Study Time Bar Chart
+        const weeklyCtx = document.getElementById('weeklyChart').getContext('2d');
+        const weeklyLabels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.WeeklyLabels));
+        const weeklyData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.WeeklyStudyMinutes));
+
+        new Chart(weeklyCtx, {
+            type: 'bar',
+            data: {
+                labels: weeklyLabels,
+                datasets: [{
+                    label: 'Minutes Studied',
+                    data: weeklyData,
+                    backgroundColor: 'rgba(37, 99, 235, 0.75)',
+                    borderColor: 'rgb(37, 99, 235)',
+                    borderWidth: 1.5,
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 30 }
+                    }
+                }
+            }
+        });
+
+        // 2. Subject Distribution Doughnut Chart
+        @if (Model.SubjectChartLabels.Any())
+        {
+            <text>
+            const subjectCtx = document.getElementById('subjectChart').getContext('2d');
+            const subjectLabels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.SubjectChartLabels));
+            const subjectData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.SubjectChartMinutes));
+
+            new Chart(subjectCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: subjectLabels,
+                    datasets: [{
+                        data: subjectData,
+                        backgroundColor: [
+                            '#2563eb', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } }
+                    }
+                }
+            });
+            </text>
+        }
+    </script>
+}
+

@@ -1,0 +1,153 @@
+@model IEnumerable<SmartStudyPlanner.Models.DailyGoal>
+@{
+    ViewData["Title"] = "Daily Goals & Accountability";
+    var todayGoal = ViewBag.TodayGoal as SmartStudyPlanner.Models.DailyGoal;
+}
+
+<div class="page-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+    <div>
+        <h2><i class="bi bi-bullseye text-primary me-2"></i>Daily Goals & Productivity</h2>
+        <p class="text-secondary mb-0">Set daily target study hours and task milestones to build consistent study habits.</p>
+    </div>
+    <a asp-action="CreateOrEditToday" class="btn btn-primary-custom">
+        <i class="bi bi-pencil-square me-1"></i> Set / Adjust Today's Goal
+    </a>
+</div>
+
+<!-- Today's Goal Spotlight Card -->
+@if (todayGoal != null)
+{
+    <div class="card card-custom p-4 mb-4 border-primary shadow-sm bg-gradient">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-3 border-bottom pb-3">
+            <div>
+                <span class="badge bg-primary px-3 py-1.5 rounded-pill mb-1">Today's Active Focus</span>
+                <h4 class="fw-bold mb-0">@todayGoal.GoalDate.ToString("dddd, MMMM dd, yyyy")</h4>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <span class="badge @(todayGoal.Status == "Achieved" ? "bg-success" : (todayGoal.Status == "In Progress" ? "bg-warning text-dark" : "bg-secondary")) px-3 py-2 fs-6 rounded-pill">
+                    Status: @todayGoal.Status
+                </span>
+                <a asp-action="CreateOrEditToday" class="btn btn-sm btn-outline-primary">Edit Targets</a>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-3">
+            <div class="col-md-6">
+                <div class="p-3 bg-light rounded-3 border">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="fw-bold text-dark"><i class="bi bi-clock me-1 text-primary"></i> Study Time Milestone</span>
+                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle">
+                            @todayGoal.CompletedStudyMinutes / @todayGoal.TargetStudyMinutes mins
+                        </span>
+                    </div>
+                    <div class="progress mb-2" style="height: 10px;">
+                        <div class="progress-bar bg-primary progress-bar-striped progress-bar-animated" role="progressbar" style="width: @todayGoal.StudyProgressPercent%"></div>
+                    </div>
+                    <div class="d-flex justify-content-between small text-muted">
+                        <span>Logged: @(Math.Round((double)todayGoal.CompletedStudyMinutes / 60.0, 1)) hrs</span>
+                        <span>@todayGoal.StudyProgressPercent% of daily target</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="p-3 bg-light rounded-3 border">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="fw-bold text-dark"><i class="bi bi-check2-circle me-1 text-success"></i> Tasks Milestone</span>
+                        <span class="badge bg-success-subtle text-success border border-success-subtle">
+                            @todayGoal.CompletedTasks / @todayGoal.TargetTasks tasks
+                        </span>
+                    </div>
+                    <div class="progress mb-2" style="height: 10px;">
+                        <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" style="width: @todayGoal.TaskProgressPercent%"></div>
+                    </div>
+                    <div class="d-flex justify-content-between small text-muted">
+                        <span>Target: @todayGoal.TargetTasks tasks</span>
+                        <span>@todayGoal.TaskProgressPercent% completed</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(todayGoal.Notes))
+        {
+            <div class="small text-muted fst-italic">
+                <i class="bi bi-quote"></i> @todayGoal.Notes
+            </div>
+        }
+    </div>
+}
+
+<!-- Goals History -->
+<h4 class="fw-bold mb-3">Daily Goals History</h4>
+<div class="card card-custom overflow-hidden">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light small text-uppercase text-secondary">
+                <tr>
+                    <th>Date</th>
+                    <th>Study Target</th>
+                    <th>Study Completed</th>
+                    <th>Tasks Target</th>
+                    <th>Tasks Completed</th>
+                    <th>Overall Status</th>
+                    <th>Notes</th>
+                    <th class="text-end">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Any())
+                {
+                    @foreach (var g in Model)
+                    {
+                        <tr>
+                            <td>
+                                <strong>@g.GoalDate.ToString("MMM dd, yyyy")</strong>
+                                <small class="text-muted d-block">@g.GoalDate.ToString("dddd")</small>
+                            </td>
+                            <td>@g.TargetStudyMinutes mins</td>
+                            <td>
+                                <span class="fw-bold @(g.CompletedStudyMinutes >= g.TargetStudyMinutes ? "text-success" : "text-dark")">
+                                    @g.CompletedStudyMinutes mins
+                                </span>
+                            </td>
+                            <td>@g.TargetTasks tasks</td>
+                            <td>
+                                <span class="fw-bold @(g.CompletedTasks >= g.TargetTasks ? "text-success" : "text-dark")">
+                                    @g.CompletedTasks tasks
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge @(g.Status == "Achieved" ? "bg-success" : (g.Status == "In Progress" ? "bg-warning text-dark" : "bg-secondary")) rounded-pill">
+                                    @g.Status
+                                </span>
+                            </td>
+                            <td class="small text-muted" style="max-width: 200px;">
+                                <div class="text-truncate" title="@g.Notes">
+                                    @(string.IsNullOrEmpty(g.Notes) ? "-" : g.Notes)
+                                </div>
+                            </td>
+                            <td class="text-end">
+                                <form asp-action="Delete" asp-route-id="@g.GoalId" method="post" class="d-inline" onsubmit="return confirm('Delete this goal record?');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger p-1" title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="8" class="text-center py-5 text-muted">
+                            <i class="bi bi-bullseye fs-2 d-block mb-2"></i>
+                            No goals logged yet. Start by setting your target for today!
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

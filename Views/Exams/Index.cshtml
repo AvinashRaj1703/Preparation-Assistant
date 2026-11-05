@@ -1,0 +1,134 @@
+@model IEnumerable<SmartStudyPlanner.Models.Exam>
+@{
+    ViewData["Title"] = "Exam Countdown & Schedules";
+    var today = DateTime.Today;
+    var upcoming = Model.Where(e => e.ExamDate >= today).OrderBy(e => e.ExamDate).ToList();
+    var past = Model.Where(e => e.ExamDate < today).OrderByDescending(e => e.ExamDate).ToList();
+}
+
+<div class="page-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+    <div>
+        <h2><i class="bi bi-award-fill text-danger me-2"></i>Exam Countdown & Schedules</h2>
+        <p class="text-secondary mb-0">Track test dates, time slots, marks benchmarks, and chapter-wise syllabus.</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary-custom">
+        <i class="bi bi-calendar-plus me-1"></i> Schedule Exam
+    </a>
+</div>
+
+<!-- Upcoming Exams Grid -->
+<div class="mb-5">
+    <h4 class="fw-bold mb-3 d-flex align-items-center gap-2">
+        <span class="badge bg-danger rounded-circle p-2 d-inline-block" style="width: 12px; height: 12px;"></span>
+        Upcoming Examinations
+    </h4>
+
+    @if (upcoming.Any())
+    {
+        <div class="row g-4">
+            @foreach (var exam in upcoming)
+            {
+                var daysLeft = (exam.ExamDate.Date - today).Days;
+                <div class="col-md-6 col-lg-4">
+                    <div class="card card-custom h-100 p-4 border-top border-4 @(daysLeft <= 7 ? "border-danger" : "border-primary") position-relative">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <span class="badge bg-light text-primary border fw-semibold">@exam.Subject?.SubjectName</span>
+                            <span class="badge @(daysLeft == 0 ? "bg-danger" : (daysLeft <= 7 ? "bg-danger-subtle text-danger border border-danger-subtle" : "bg-primary-subtle text-primary border border-primary-subtle")) rounded-pill px-2.5 py-1">
+                                @(daysLeft == 0 ? "TODAY!" : $"{daysLeft} Days Left")
+                            </span>
+                        </div>
+
+                        <h5 class="fw-bold mb-2">
+                            <a asp-action="Details" asp-route-id="@exam.ExamId" class="text-decoration-none text-dark">
+                                @exam.ExamName
+                            </a>
+                        </h5>
+
+                        <div class="bg-light p-3 rounded-3 mb-3 small">
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <i class="bi bi-calendar-event text-danger"></i>
+                                <span><strong>@exam.ExamDate.ToString("dddd, MMM dd, yyyy")</strong></span>
+                            </div>
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <i class="bi bi-clock text-secondary"></i>
+                                <span>@exam.ExamTime</span>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-trophy text-warning"></i>
+                                <span>Passing: <strong>@exam.PassingMarks</strong> / @exam.TotalMarks marks (@Math.Round((double)exam.PassingMarks / exam.TotalMarks * 100)% pass criteria)</span>
+                            </div>
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(exam.Syllabus))
+                        {
+                            <div class="small text-muted mb-3 text-truncate">
+                                <strong>Syllabus:</strong> @exam.Syllabus
+                            </div>
+                        }
+
+                        <div class="d-flex gap-2 mt-auto pt-3 border-top">
+                            <a asp-controller="RevisionPlans" asp-action="Create" asp-route-examId="@exam.ExamId" asp-route-subjectId="@exam.SubjectId" class="btn btn-sm btn-outline-danger flex-fill">
+                                <i class="bi bi-arrow-repeat me-1"></i> Revise
+                            </a>
+                            <a asp-action="Details" asp-route-id="@exam.ExamId" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a asp-action="Edit" asp-route-id="@exam.ExamId" class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <form asp-action="Delete" asp-route-id="@exam.ExamId" method="post" onsubmit="return confirm('Delete this exam?');">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="card card-custom p-4 text-center text-muted">
+            <i class="bi bi-calendar-check fs-2 mb-2 text-secondary"></i>
+            <p class="mb-0">No upcoming exams scheduled right now.</p>
+        </div>
+    }
+</div>
+
+@if (past.Any())
+{
+    <div>
+        <h5 class="fw-bold text-muted mb-3">Completed / Past Examinations</h5>
+        <div class="table-responsive card card-custom">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light small">
+                    <tr>
+                        <th>Exam Name</th>
+                        <th>Subject</th>
+                        <th>Exam Date</th>
+                        <th>Time</th>
+                        <th>Passing / Total Marks</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var ex in past)
+                    {
+                        <tr>
+                            <td class="fw-bold">@ex.ExamName</td>
+                            <td><span class="badge bg-light text-dark border">@ex.Subject?.SubjectName</span></td>
+                            <td>@ex.ExamDate.ToString("MMM dd, yyyy")</td>
+                            <td>@ex.ExamTime</td>
+                            <td>@ex.PassingMarks / @ex.TotalMarks</td>
+                            <td class="text-end">
+                                <a asp-action="Details" asp-route-id="@ex.ExamId" class="btn btn-sm btn-outline-secondary">Details</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+

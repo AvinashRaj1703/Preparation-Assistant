@@ -1,0 +1,83 @@
+@model SmartStudyPlanner.Models.User
+@{
+    ViewData["Title"] = "Student Profile";
+}
+
+<div class="row justify-content-center py-4">
+    <div class="col-md-7">
+        <div class="card card-custom p-4">
+            <div class="d-flex align-items-center gap-3 border-bottom pb-3 mb-4">
+                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold fs-3 shadow-sm" style="width: 64px; height: 64px;">
+                    @(Model.FullName.Substring(0, 1).ToUpper())
+                </div>
+                <div>
+                    <h3 class="fw-bold mb-0">@Model.FullName</h3>
+                    <div class="text-muted small">@Model.Email &bull; <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill">@(Model.IsActive ? "Active Student" : "Inactive")</span></div>
+                </div>
+            </div>
+
+            <h5 class="fw-bold mb-3">Academic Stats Summary</h5>
+            <div class="row g-3 mb-4 text-center">
+                <div class="col-4">
+                    <div class="p-3 bg-light rounded-3 border">
+                        <div class="stat-icon-box bg-primary-subtle text-primary mx-auto mb-2">
+                            <i class="bi bi-journal-check"></i>
+                        </div>
+                        <h4 class="fw-bold mb-0">@ViewBag.TotalSubjects</h4>
+                        <small class="text-muted">Enrolled Subjects</small>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="p-3 bg-light rounded-3 border">
+                        <div class="stat-icon-box bg-success-subtle text-success mx-auto mb-2">
+                            <i class="bi bi-clock-history"></i>
+                        </div>
+                        <h4 class="fw-bold mb-0">@ViewBag.TotalStudyHours h</h4>
+                        <small class="text-muted">Study Logged</small>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="p-3 bg-light rounded-3 border">
+                        <div class="stat-icon-box bg-warning-subtle text-warning mx-auto mb-2">
+                            <i class="bi bi-trophy-fill"></i>
+                        </div>
+                        <h4 class="fw-bold mb-0">@ViewBag.TotalGoalsAchieved</h4>
+                        <small class="text-muted">Goals Achieved</small>
+                    </div>
+                </div>
+            </div>
+
+            <h6 class="fw-bold mb-2">Account Details (Schema: Users Table)</h6>
+            <table class="table table-sm table-bordered small">
+                <tr>
+                    <th class="bg-light w-25">User ID</th>
+                    <td><code>@Model.UserId</code></td>
+                </tr>
+                <tr>
+                    <th class="bg-light">Full Name</th>
+                    <td>@Model.FullName</td>
+                </tr>
+                <tr>
+                    <th class="bg-light">Email Address</th>
+                    <td>@Model.Email</td>
+                </tr>
+                <tr>
+                    <th class="bg-light">Account Status</th>
+                    <td>@(Model.IsActive ? "Active" : "Disabled")</td>
+                </tr>
+            </table>
+
+            <div class="d-flex justify-content-between mt-3">
+                <a asp-controller="Dashboard" asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+                </a>
+                <form asp-controller="Account" asp-action="Logout" method="post">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-box-arrow-right me-1"></i> Sign Out
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
