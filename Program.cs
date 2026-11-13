@@ -38,6 +38,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 // Application Services
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddSingleton<IMongoDbService, MongoDbService>();
 
 var app = builder.Build();
 

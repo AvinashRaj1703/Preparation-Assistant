@@ -190,6 +190,11 @@
                                     <i class="bi bi-calendar3 me-1"></i> Calendar
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="DatabaseStatus" asp-action="Index">
+                                    <i class="bi bi-cloud-check-fill text-info me-1"></i> Cloud DB
+                                </a>
+                            </li>
                         </ul>
 
                         <ul class="navbar-nav ms-auto align-items-center gap-2">
@@ -218,6 +223,7 @@
                                     <li><h6 class="dropdown-header text-muted">Logged in as @User.Identity.Name</h6></li>
                                     <li><a class="dropdown-item" asp-controller="Account" asp-action="Profile"><i class="bi bi-person me-2"></i>My Profile</a></li>
                                     <li><a class="dropdown-item" asp-controller="DailyGoals" asp-action="CreateOrEditToday"><i class="bi bi-bullseye me-2"></i>Today's Goal</a></li>
+                                    <li><a class="dropdown-item" asp-controller="DatabaseStatus" asp-action="Index"><i class="bi bi-cloud-check me-2 text-success"></i>Cloud DB (MongoDB)</a></li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
                                         <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">

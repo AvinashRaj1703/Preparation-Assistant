@@ -17,9 +17,10 @@
 ## 💻 Tech Stack & Architecture
 * **Framework**: ASP.NET Core 8.0 (Model-View-Controller)
 * **ORM**: Entity Framework Core 8.0 (Code-First & Database-First compatible)
-* **Cross-Platform Database**:
+* **Cross-Platform & Multi-Database Engine**:
   * **SQLite** (Default — Zero-configuration, runs natively on macOS, Linux, and Windows)
   * **Microsoft SQL Server** (Supported via `appsettings.json` and bundled T-SQL scripts for Windows/SSMS evaluation)
+  * **MongoDB Atlas NoSQL Cloud Database** (Integrated via `MongoDB.Driver` 3.13 with live cluster health monitoring and two-way sync for all 8 modules)
 * **Security & Auth**:
   * Cookie-based Authentication (`CookieAuthenticationDefaults`)
   * Cryptographic Password Hashing via `BCrypt.Net-Next` (Salted PBKDF/Blowfish)
@@ -182,6 +183,15 @@ If your professor or college lab requires Microsoft SQL Server:
 4. Pre-written SQL scripts are available in the `Database/` folder:
    * `Database/Schema_SqlServer.sql` (Complete T-SQL DDL script)
    * `Database/SeedData.sql` (Sample data insertions)
+
+---
+
+## 🍃 MongoDB Atlas Cloud Integration
+The project connects to **MongoDB Atlas** (`cluster0.mio42uj.mongodb.net`) for hybrid NoSQL cloud backup, disaster recovery, and document-oriented queries:
+* **Configuration**: Configured in `appsettings.json` under `ConnectionStrings:MongoDbConnection` and `MongoDbDatabaseName`.
+* **Live Cluster Dashboard**: Access **`http://localhost:5186/DatabaseStatus`** (or click **Cloud DB** in the top navigation).
+* **One-Click Sync**: Push all 8 relational tables (Users, Subjects, Tasks, Exams, Sessions, Revisions, Goals, Notifications) into MongoDB collections with 1 click.
+* **Health Checks**: Real-time ping latency check directly to the MongoDB Atlas replica set.
 
 ---
 
