@@ -3,6 +3,7 @@
     ViewData["Title"] = "Daily Goals & Accountability";
     var todayGoal = ViewBag.TodayGoal as SmartStudyPlanner.Models.DailyGoal;
     var todayTasks = ViewBag.TodayTasks as List<SmartStudyPlanner.Models.StudyTask> ?? new();
+    var allSubjectTasks = ViewBag.AllSubjectTasks as List<SmartStudyPlanner.Models.StudyTask> ?? new();
 }
 
 <div class="page-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
@@ -88,6 +89,40 @@
                 <a asp-controller="Tasks" asp-action="Create" class="btn btn-sm btn-outline-primary">
                     <i class="bi bi-plus-lg me-1"></i> Add New Task
                 </a>
+            </div>
+
+            <!-- Quick Dropdown: Pick from existing subject tasks to prevent name conflicts -->
+            <div class="card p-3 mb-3 bg-light border">
+                <form asp-action="AddExistingTaskToToday" method="post" class="row g-2 align-items-center">
+                    <div class="col-md-7">
+                        <label class="form-label small fw-bold text-dark mb-1">
+                            <i class="bi bi-box-arrow-in-down-right text-primary me-1"></i> Add Existing Task to Today's Goal:
+                        </label>
+                        <select name="taskId" class="form-select form-select-sm" required>
+                            <option value="">-- Choose from tasks already added to your subjects --</option>
+                            @foreach (var group in allSubjectTasks.GroupBy(t => t.Subject?.SubjectName ?? "General"))
+                            {
+                                <optgroup label="📚 @group.Key">
+                                    @foreach (var t in group)
+                                    {
+                                        <option value="@t.TaskId">@t.Title (@t.TaskType &bull; @t.Priority Priority &bull; @t.Status)</option>
+                                    }
+                                </optgroup>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-5 d-flex gap-2 align-items-end">
+                        <button type="submit" class="btn btn-sm btn-primary flex-fill">
+                            <i class="bi bi-plus-circle me-1"></i> Add to Today's Goal
+                        </button>
+                        <a asp-controller="Tasks" asp-action="Create" asp-route-from="DailyGoals" class="btn btn-sm btn-outline-secondary" title="Create a brand new task">
+                            <i class="bi bi-plus-lg"></i> New
+                        </a>
+                    </div>
+                </form>
+                <div class="small text-muted mt-1" style="font-size: 0.75rem;">
+                    <i class="bi bi-info-circle text-info me-1"></i> Selects tasks already created in <em>Subjects &rarr; Tasks</em> to avoid duplicate name conflicts.
+                </div>
             </div>
 
             @if (todayTasks.Any())

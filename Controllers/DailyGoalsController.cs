@@ -65,12 +65,45 @@ public class DailyGoalsController : BaseController
             .ThenBy(t => t.Deadline)
             .ToListAsync();
 
+        // Fetch all tasks already added to subjects so user can pick them without duplicate name conflicts
+        var allSubjectTasks = await _context.Tasks
+            .Include(t => t.Subject)
+            .Where(t => t.Subject!.UserId == CurrentUserId && t.Subject.IsActive)
+            .OrderBy(t => t.Subject!.SubjectName)
+            .ThenBy(t => t.Title)
+            .ToListAsync();
+
         ViewBag.TodayTasks = todayTasks;
+        ViewBag.AllSubjectTasks = allSubjectTasks;
         ViewBag.TodayGoal = todayGoal;
         ViewBag.AchievedGoalsCount = goals.Count(g => g.Status == "Achieved");
         ViewBag.TotalGoalsCount = goals.Count;
 
         return View(goals);
+    }
+
+    // POST: DailyGoals/AddExistingTaskToToday
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AddExistingTaskToToday(int taskId)
+    {
+        var task = await _context.Tasks
+            .Include(t => t.Subject)
+            .FirstOrDefaultAsync(t => t.TaskId == taskId && t.Subject!.UserId == CurrentUserId);
+
+        if (task != null)
+        {
+            // Set deadline to today so it appears in today's active goals
+            task.Deadline = DateTime.Today;
+            await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = $"Task '{task.Title}' from {task.Subject?.SubjectName} added to today's goals!";
+        }
+        else
+        {
+            TempData["ErrorMessage"] = "Selected task could not be found.";
+        }
+
+        return RedirectToAction(nameof(Index));
     }
 
     // GET: DailyGoals/CreateOrEditToday

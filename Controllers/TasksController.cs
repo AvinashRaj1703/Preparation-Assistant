@@ -78,12 +78,14 @@ public class TasksController : BaseController
     }
 
     // GET: Tasks/Create
-    public async Task<IActionResult> Create()
+    public async Task<IActionResult> Create(string? from = null)
     {
         await PopulateSubjectsDropDownListAsync();
+        await PopulateExistingTasksAndTypesAsync();
+        ViewBag.FromSource = from;
         return View(new StudyTask
         {
-            Deadline = DateTime.Today.AddDays(7),
+            Deadline = from == "DailyGoals" ? DateTime.Today : DateTime.Today.AddDays(7),
             Priority = "Medium",
             Difficulty = "Medium",
             TaskType = "Assignment",
@@ -97,7 +99,7 @@ public class TasksController : BaseController
     // POST: Tasks/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(StudyTask task)
+    public async Task<IActionResult> Create(StudyTask task, string? from = null)
     {
         // Verify subject belongs to current user
         var subject = await _context.Subjects
@@ -106,6 +108,15 @@ public class TasksController : BaseController
         if (subject == null)
         {
             ModelState.AddModelError("SubjectId", "Selected subject is invalid.");
+        }
+
+        // Check for duplicate name conflict under the same subject
+        bool nameConflict = await _context.Tasks
+            .AnyAsync(t => t.SubjectId == task.SubjectId && t.Title.ToLower() == task.Title.Trim().ToLower());
+
+        if (nameConflict)
+        {
+            ModelState.AddModelError("Title", "A task with this title already exists under the selected subject. To avoid name conflicts, pick from existing tasks or enter a unique title.");
         }
 
         if (ModelState.IsValid)
@@ -120,10 +131,17 @@ public class TasksController : BaseController
             _context.Tasks.Add(task);
             await _context.SaveChangesAsync();
             TempData["SuccessMessage"] = $"Task '{task.Title}' added successfully!";
+
+            if (from == "DailyGoals")
+            {
+                return RedirectToAction("Index", "DailyGoals");
+            }
             return RedirectToAction(nameof(Index));
         }
 
         await PopulateSubjectsDropDownListAsync(task.SubjectId);
+        await PopulateExistingTasksAndTypesAsync();
+        ViewBag.FromSource = from;
         return View(task);
     }
 
@@ -264,6 +282,30 @@ public class TasksController : BaseController
             .ToListAsync();
 
         ViewBag.SubjectId = new SelectList(subjectsQuery, "SubjectId", "SubjectName", selectedSubject);
+    }
+
+    private async Task PopulateExistingTasksAndTypesAsync()
+    {
+        var existingTasks = await _context.Tasks
+            .Include(t => t.Subject)
+            .Where(t => t.Subject!.UserId == CurrentUserId)
+            .OrderBy(t => t.Subject!.SubjectName)
+            .ThenBy(t => t.Title)
+            .ToListAsync();
+
+        ViewBag.ExistingTasks = existingTasks;
+
+        // Distinct task types already added to subjects by the user
+        var distinctTypes = existingTasks
+            .Select(t => t.TaskType)
+            .Where(tt => !string.IsNullOrWhiteSpace(tt))
+            .Distinct()
+            .ToList();
+
+        var defaultTypes = new List<string> { "Assignment", "Project", "Lab Work", "Reading", "Practice" };
+        var allTypes = distinctTypes.Union(defaultTypes).Distinct().ToList();
+
+        ViewBag.AvailableTaskTypes = allTypes;
     }
 }
 

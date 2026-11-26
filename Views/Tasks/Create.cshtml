@@ -1,14 +1,65 @@
 @model SmartStudyPlanner.Models.StudyTask
 @{
     ViewData["Title"] = "Create New Task";
+    var existingTasks = ViewBag.ExistingTasks as List<SmartStudyPlanner.Models.StudyTask> ?? new();
+    var availableTypes = ViewBag.AvailableTaskTypes as List<string> ?? new List<string> { "Assignment", "Project", "Lab Work", "Reading", "Practice" };
 }
 
 <div class="row justify-content-center">
     <div class="col-lg-8">
         <div class="card card-custom p-4 shadow-sm">
-            <h4 class="fw-bold mb-3"><i class="bi bi-plus-circle text-primary me-2"></i>Create New Task / Assignment</h4>
+            <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+                <h4 class="fw-bold mb-0"><i class="bi bi-plus-circle text-primary me-2"></i>Create New Task / Assignment</h4>
+                @if (ViewBag.FromSource == "DailyGoals")
+                {
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle">Daily Goals Mode</span>
+                }
+            </div>
+
+            @if (ViewBag.FromSource == "DailyGoals")
+            {
+                <div class="alert alert-info py-2 small d-flex align-items-center mb-3">
+                    <i class="bi bi-info-circle-fill me-2 fs-5"></i>
+                    <div>You are adding a task from <strong>Daily Goals</strong>. To avoid name conflicts, you can pick a task already added to your subjects from the dropdown below!</div>
+                </div>
+            }
+
+            <!-- Quick Picker: Pick from existing subject tasks to prevent name conflicts -->
+            @if (existingTasks.Any())
+            {
+                <div class="p-3 bg-light rounded-3 border mb-3">
+                    <label class="form-label small fw-bold text-dark mb-1">
+                        <i class="bi bi-search text-primary me-1"></i> Choose from Existing Subject Tasks (Prevents Name Conflicts):
+                    </label>
+                    <select id="existingTaskPicker" class="form-select form-select-sm" onchange="applyExistingTask(this)">
+                        <option value="">-- Or pick from tasks already added to your subjects --</option>
+                        @foreach (var group in existingTasks.GroupBy(t => t.Subject?.SubjectName ?? "General"))
+                        {
+                            <optgroup label="📚 @group.Key">
+                                @foreach (var t in group)
+                                {
+                                    <option value="@t.TaskId"
+                                            data-subjectid="@t.SubjectId"
+                                            data-type="@t.TaskType"
+                                            data-title="@t.Title"
+                                            data-desc="@t.Description"
+                                            data-priority="@t.Priority"
+                                            data-difficulty="@t.Difficulty"
+                                            data-hours="@t.EstimatedHours">
+                                        @t.Title (@t.TaskType &bull; @t.Priority Priority)
+                                    </option>
+                                }
+                            </optgroup>
+                        }
+                    </select>
+                    <div class="small text-muted mt-1" style="font-size: 0.75rem;">
+                        <i class="bi bi-magic text-primary me-1"></i> Selecting an existing task pre-fills the subject, task type, title, and estimated hours to eliminate duplicate conflicting entries.
+                    </div>
+                </div>
+            }
 
             <form asp-action="Create" method="post">
+                <input type="hidden" name="from" value="@ViewBag.FromSource" />
                 <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
 
                 <div class="row g-3">
@@ -21,13 +72,12 @@
                     </div>
 
                     <div class="col-md-6">
-                        <label asp-for="TaskType" class="form-label fw-semibold"></label>
+                        <label asp-for="TaskType" class="form-label fw-semibold">Task Type (From Added Subject Tasks)</label>
                         <select asp-for="TaskType" class="form-select">
-                            <option value="Assignment">Assignment</option>
-                            <option value="Project">Project</option>
-                            <option value="Lab Work">Lab Work</option>
-                            <option value="Reading">Reading</option>
-                            <option value="Practice">Practice / Homework</option>
+                            @foreach (var tt in availableTypes)
+                            {
+                                <option value="@tt">@tt</option>
+                            }
                         </select>
                         <span asp-validation-for="TaskType" class="text-danger small"></span>
                     </div>
@@ -114,5 +164,27 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        function applyExistingTask(select) {
+            const opt = select.options[select.selectedIndex];
+            if (!opt || !opt.value) return;
+
+            const subjectId = opt.getAttribute('data-subjectid');
+            const type = opt.getAttribute('data-type');
+            const title = opt.getAttribute('data-title');
+            const desc = opt.getAttribute('data-desc');
+            const priority = opt.getAttribute('data-priority');
+            const difficulty = opt.getAttribute('data-difficulty');
+            const hours = opt.getAttribute('data-hours');
+
+            if (subjectId) document.getElementById('SubjectId').value = subjectId;
+            if (type) document.getElementById('TaskType').value = type;
+            if (title) document.getElementById('Title').value = title;
+            if (desc) document.getElementById('Description').value = desc;
+            if (priority) document.getElementById('Priority').value = priority;
+            if (difficulty) document.getElementById('Difficulty').value = difficulty;
+            if (hours) document.getElementById('EstimatedHours').value = hours;
+        }
+    </script>
 }
 
