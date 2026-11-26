@@ -56,6 +56,16 @@ public class DailyGoalsController : BaseController
             await _context.SaveChangesAsync();
         }
 
+        // Fetch active tasks to review for today's goal
+        var todayTasks = await _context.Tasks
+            .Include(t => t.Subject)
+            .Where(t => t.Subject!.UserId == CurrentUserId &&
+                       (t.Status != "Completed" || (t.CompletedAt.HasValue && t.CompletedAt.Value.Date == today)))
+            .OrderBy(t => t.Status == "Completed")
+            .ThenBy(t => t.Deadline)
+            .ToListAsync();
+
+        ViewBag.TodayTasks = todayTasks;
         ViewBag.TodayGoal = todayGoal;
         ViewBag.AchievedGoalsCount = goals.Count(g => g.Status == "Achieved");
         ViewBag.TotalGoalsCount = goals.Count;

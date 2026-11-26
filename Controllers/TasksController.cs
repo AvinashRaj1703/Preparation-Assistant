@@ -204,7 +204,7 @@ public class TasksController : BaseController
     // POST: Tasks/ToggleComplete/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> ToggleComplete(int id)
+    public async Task<IActionResult> ToggleComplete(int id, string? returnUrl = null)
     {
         var task = await _context.Tasks
             .Include(t => t.Subject)
@@ -228,6 +228,12 @@ public class TasksController : BaseController
         }
 
         await _context.SaveChangesAsync();
+
+        if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+        {
+            return Redirect(returnUrl);
+        }
+
         return RedirectToAction(nameof(Index));
     }
 
