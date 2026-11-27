@@ -314,6 +314,35 @@ This project was engineered to demonstrate multi-database enterprise readiness:
 
 ---
 
+## 🌐 Cloud Deployment Guide (Render / Railway / Azure)
+
+### Why Render / Railway instead of Vercel?
+* **Vercel** is designed specifically for frontend JavaScript/TypeScript frameworks (Next.js, React, Vue) and serverless functions. It does **not** natively support the Microsoft .NET 8.0 SDK or long-running ASP.NET Core Kestrel web servers.
+* **Render (render.com)** and **Railway (railway.app)** are modern cloud platforms that natively support Docker containers and ASP.NET Core apps with **free tiers** and automatic deployment directly from GitHub.
+
+### 🛡️ Will Deploying this Affect My Other Projects (e.g. `saarthi`)?
+> **NO, ABSOLUTELY NOT!**  
+> Every project you deploy in an organization or team group is **completely isolated**:
+> - **Separate Git Repository**: `Preparation-Assistant` is an independent repository.
+> - **Separate Subdomain & URLs**: It receives its own distinct URL (e.g. `preparation-assistant.onrender.com`), completely separate from `saarthi`.
+> - **Separate Compute & Containers**: It runs inside its own isolated Linux container. It shares zero memory, zero processes, and zero database files with `saarthi`.
+> - **Zero Risk**: As long as you create it as a **New Project** and import the `Preparation-Assistant` repository, your existing `saarthi` project is 100% untouched and safe.
+
+### 🚀 2-Minute Deployment on Render (Step-by-Step):
+1. Go to [render.com](https://render.com) and sign in with GitHub.
+2. Click **New +** ➔ Select **Web Service**.
+3. Choose **"Build and deploy from a Git repository"** and select `Preparation-Assistant` (or paste `https://github.com/AvinashRaj1703/Preparation-Assistant`).
+4. In the setup form:
+   - **Name**: `smart-study-planner` (or any name you like)
+   - **Language / Runtime**: **Docker** (Render will automatically detect the included `Dockerfile`).
+   - **Instance Type**: **Free**.
+5. *(Optional)* Under **Environment Variables**, you can add:
+   - `ConnectionStrings__MongoDbConnection`: `mongodb+srv://keyurijjoshi_db_user:2dG0e99lpgjMF68h@cluster0.mio42uj.mongodb.net/`
+   - `MongoDbDatabaseName`: `SmartStudyPlanner_Cloud`
+6. Click **Create Web Service**. Render will automatically build the Docker image and give you a live HTTPS web address!
+
+---
+
 ## 💡 Viva & Faculty Examination Questions & Answers
 
 Be completely prepared for questions asked by internal and external evaluators:
