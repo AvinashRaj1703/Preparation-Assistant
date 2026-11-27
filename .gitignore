@@ -17,6 +17,8 @@ Library/
 [Oo]bj/
 [Ll]og/
 [Ll]ogs/
+publish/
+*.zip
 
 ## SQLite & Temporary DB files
 *.db-shm

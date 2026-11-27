@@ -2,19 +2,32 @@
 > **Academic Project for .NET / Dotnet Subject**  
 > Built with **ASP.NET Core 8.0 MVC**, **Entity Framework Core**, **Bootstrap 5**, **Chart.js**, **FullCalendar**, **SQLite**, **SQL Server**, and **MongoDB Atlas**.
 > 
+> 🌐 **Live Web Application**: [https://studysphere.runasp.net](https://studysphere.runasp.net)  
 > 🔗 **GitHub Repository**: [https://github.com/AvinashRaj1703/Preparation-Assistant](https://github.com/AvinashRaj1703/Preparation-Assistant)
 
 ---
 
+## 🌐 Live Website URL & Demo Credentials
+
+The web application is live, deployed, and secured with HTTPS:
+* 👉 **Live Website**: [https://studysphere.runasp.net](https://studysphere.runasp.net)
+* **Pre-Seeded Demo Account**:
+  * **Email**: `student@study.edu`
+  * **Password**: `Password123!`
+  * *(Or click the green **"One-Click Demo Student Sign In"** button on the home page).*
+
+---
+
 ## 📖 Table of Contents
-1. [🌟 What is Smart Study Planner?](#-what-is-smart-study-planner)
-2. [🚶 Non-Technical User Flow: Step-by-Step Walkthrough](#-non-technical-user-flow-step-by-step-walkthrough)
-3. [📊 How Progress Bars & Total Study Time Work](#-how-progress-bars--total-study-time-work)
-4. [🗄️ Database Schema & Relational Architecture](#️-database-schema--relational-architecture)
-5. [📋 Dummy Data Tables (All 8 Database Tables with Sample Records)](#-dummy-data-tables-all-8-database-tables-with-sample-records)
-6. [🚀 How to Run the Project (Zero Configuration)](#-how-to-run-the-project-zero-configuration)
-7. [🍃 Hybrid Multi-Database Architecture (SQLite + SQL Server + MongoDB)](#-hybrid-multi-database-architecture)
-8. [💡 Viva & Faculty Examination Questions & Answers](#-viva--faculty-examination-questions--answers)
+1. [🌐 Live Website URL & Demo Credentials](#-live-website-url--demo-credentials)
+2. [🌟 What is Smart Study Planner?](#-what-is-smart-study-planner)
+3. [🚶 Non-Technical User Flow: Step-by-Step Walkthrough](#-non-technical-user-flow-step-by-step-walkthrough)
+4. [📊 How Progress Bars & Total Study Time Work](#-how-progress-bars--total-study-time-work)
+5. [🗄️ Database Schema & Relational Architecture](#️-database-schema--relational-architecture)
+6. [📋 Dummy Data Tables (All 8 Database Tables with Sample Records)](#-dummy-data-tables-all-8-database-tables-with-sample-records)
+7. [🚀 How to Run the Project (Zero Configuration)](#-how-to-run-the-project-zero-configuration)
+8. [🍃 Hybrid Multi-Database Architecture (SQLite + SQL Server + MongoDB)](#-hybrid-multi-database-architecture)
+9. [💡 Viva & Faculty Examination Questions & Answers](#-viva--faculty-examination-questions--answers)
 
 ---
 
@@ -371,4 +384,5 @@ Be completely prepared for questions asked by internal and external evaluators:
 * **Project Name**: Smart Study Planner (Preparation Assistant)
 * **Subject**: Dotnet / .NET Application Development
 * **Framework**: ASP.NET Core 8.0 (C#)
+* **Live Website**: [https://studysphere.runasp.net](https://studysphere.runasp.net)
 * **Code Repository**: [GitHub - Preparation-Assistant](https://github.com/AvinashRaj1703/Preparation-Assistant)
